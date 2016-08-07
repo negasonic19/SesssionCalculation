@@ -1,0 +1,26 @@
+import json
+from collections import defaultdict
+data = []
+dictionary= defaultdict(list)
+with open('datasets/GreedyGame/ggevent.log') as f:
+    for line in f:
+        data=(json.loads(line))
+        dictionary[data["headers"]["ai5"],data["bottle"]["game_id"]].append([data["post"]["event"],data["post"]["ts"]])
+
+            
+flag=0
+for key in dictionary :
+    dictionary[key].extend([0,0,0])
+    if dictionary[key][0][0] != "ggstop" :
+        
+        for val in dictionary[key][:-3]:
+            if val[0]=="ggstart" :
+                dictionary[key][-3] = int(val[1])
+            else :
+                dictionary[key][-2] = int(val[1])
+                dictionary[key][-1] = dictionary[key][-2]-dictionary[key][-3]
+                if dictionary[key][-1] > 60 :
+                    flag += 1
+                    dictionary[key][-1]=0
+				
+flag
